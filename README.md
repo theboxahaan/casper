@@ -1,6 +1,6 @@
 # casper
 
-> Let's Get Started !
+> Let's Get Started ! 😁
 
 ### Ideas
 1. buzi
