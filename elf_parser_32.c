@@ -35,28 +35,75 @@ struct elf_32
 
 };
 
-struct elf_32 *parser_elf_32(FILE *file_ptr)
+struct elf_32 *parse_elf_32(FILE *file_ptr)
 {
-	struct elf_32 *buff;
+	struct elf_32 *buff = NULL;
 	
 	if(!( buff = malloc(sizeof(*buff)) ))
-	{
-		printf("Error with malloc\n");
-		return NULL;
-	}
-	if(fread( buff, sizeof(*buff), 1, file_ptr)) printf("0X%X %c %c %c \n", buff->e_ident[EI_MAG0], buff->e_ident[EI_MAG1], buff->e_ident[EI_MAG2], buff->e_ident[EI_MAG3]);
-	else printf("fread failed\n");
+		fprintf(stderr, "could not allocate memory for buffer...malloc failed\n");
+	else
+		if(!fread( buff, sizeof(*buff), 1, file_ptr)) 
+			fprintf(stderr, "error while reading from file...fread failed\n");
 
 	return buff;
 }
 
-/* primitive testrig  code */
+void display_header_elf_32(struct elf_32 *buff)
+{
+	fprintf(stdout,
+			"============[ HEADER ]============\n"
+			"e_ident[EI_MAG0-3]    : 0x%X %c%c%c\n"
+			"e_ident[EI_CLASS]     : 0x%X\n"
+			"e_ident[EI_DATA]      : 0x%X\n"
+			"e_ident[EI_VERSION]   : 0x%X\n"
+			"e_ident[EI_OSABI]     : 0x%X\n"
+			"e_ident[EI_ABIVERSION]: 0x%X\n"
+			"e_ident[EI_PAD]       : 0x%X%X%X%X%X%X%X\n"
+			"e_type                : 0x%X\n"
+			"e_machine             : 0x%X\n"
+			"e_version             : 0x%X\n"
+			"e_entry               : 0x%X\n"
+			"e_phoff               : 0x%X\n"
+			"e_shoff               : 0x%X\n"
+			"e_flags               : 0x%X\n"
+			"e_ehsize              : 0x%X\n"
+			"e_phentsize           : 0x%X\n"
+			"e_phnum               : 0x%X\n"
+			"e_shentsize           : 0x%X\n"
+			"e_shnum               : 0x%X\n"
+			"e_shstrndx            : 0x%X\n"
+			,
+			buff->e_ident[EI_MAG0], buff->e_ident[EI_MAG1], buff->e_ident[EI_MAG2], buff->e_ident[EI_MAG3],
+			buff->e_ident[EI_CLASS],
+			buff->e_ident[EI_DATA],
+			buff->e_ident[EI_VERSION],
+			buff->e_ident[EI_OSABI],
+			buff->e_ident[EI_ABIVERSION],
+			buff->e_ident[EI_PAD], buff->e_ident[EI_PAD+1],buff->e_ident[EI_PAD+2],buff->e_ident[EI_PAD+3],				buff->e_ident[EI_PAD+4],buff->e_ident[EI_PAD+5],buff->e_ident[EI_PAD+6],
+			buff->e_type,
+			buff->e_machine,
+			buff->e_version,
+			buff->e_entry,
+			buff->e_phoff,
+			buff->e_shoff,
+			buff->e_flags,
+			buff->e_ehsize,
+			buff->e_phentsize,
+			buff->e_phnum,
+			buff->e_shentsize,
+			buff->e_shnum,
+			buff->e_shstrndx
+			);
+
+}
 
 int main(int argc, char **argv)
 {
 	if(argc < 2) return 1;
 	
 	FILE *ptr = fopen( argv[1], "r");
-	free(parser_elf_32(ptr));
+	struct elf_32 *buffer= parse_elf_32(ptr);
+	display_header_elf_32(buffer);
+	free(buffer);
 	return 0;
 }
