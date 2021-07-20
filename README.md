@@ -2,6 +2,13 @@
 
 > Let's Get Started ! 😁
 
+### To build and run `elf_parser_32`
+Navigate to repo root`
+```bash
+$ make
+$ cd build/ && ./elf_parser_32 <32 bit ELF file>
+```
+
 ### Ideas
 1. buzi
 2. Write your own cstdlib.h 
