@@ -49,6 +49,20 @@ struct elf_32_program_header_entry
 
 };
 
+struct elf_32_section_header_entry
+{
+	/* section header */
+	uint32_t sh_name;		// offset to name string in .shstrtab section
+	uint32_t sh_type;		// identifies type of the header
+	uint32_t sh_flags;		// identifies attributes of the section
+	uint32_t sh_addr;		// virtual addr of section in mem (loaded)
+	uint32_t sh_offset;		// offset of the section in file image
+	uint32_t sh_size;		// size of section in file image
+	uint32_t sh_link;		// section index of assoc section
+	uint32_t sh_info;		// extra info about the section 
+	uint32_t sh_addralign;	// required alignment for the section
+	uint32_t sh_entsize;	// size of each entry for fixed-length entries; else 0
+};
 
 struct elf_32
 {
