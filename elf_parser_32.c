@@ -16,8 +16,9 @@ enum e_ident_offsets
 	EI_PAD			// padded with 0s - 7 pad bytes
 };
 
-struct elf_32
+struct elf_32_file_header
 {
+	/* file header */
 	uint8_t e_ident[16];	// identification bytes
 	uint16_t e_type;		// identify object file type
 	uint16_t e_machine;		// specify the target ISA
@@ -32,26 +33,76 @@ struct elf_32
 	uint16_t e_shentsize;	// size of a section header table entry
 	uint16_t e_shnum;		// number of entries in the section header table
 	uint16_t e_shstrndx;	// index of the section header table entry that contains section names
+};
+
+struct elf_32_program_header_entry
+{
+	/* program header */
+	uint32_t p_type;		// identifies the type of segment
+	uint32_t p_offset;		// offset of segment in the file image
+	uint32_t p_vaddr;		// virtual address of segment in memory
+	uint32_t p_paddr;		// reserved for physical address of segment
+	uint32_t p_filesz;		// size in bytes of the segment in file image
+	uint32_t p_memsz;		// size in bytes of the segment in memory
+	uint32_t p_flags;		// segment dependent flags (32-bit arch.)
+	uint32_t p_align;		// look up docus
 
 };
 
+
+struct elf_32
+{
+	struct elf_32_file_header *file_header;
+	struct elf_32_program_header_entry *program_header;
+};
+
+
+
 struct elf_32 *parse_elf_32(FILE *file_ptr)
 {
-	struct elf_32 *buff = NULL;
+	struct elf_32 *parsed_elf = NULL;
 	
-	if(!( buff = malloc(sizeof(*buff)) ))
-		fprintf(stderr, "could not allocate memory for buffer...malloc failed\n");
+	if(!( parsed_elf = malloc(sizeof(*parsed_elf)) ))
+		fprintf(stderr, "could not allocate memory for parsed  struct...malloc failed\n");
 	else
-		if(!fread( buff, sizeof(*buff), 1, file_ptr)) 
-			fprintf(stderr, "error while reading from file...fread failed\n");
+	{
+		/* allocate memory for file header */
+		if(
+			(parsed_elf->file_header = malloc(sizeof(*parsed_elf->file_header))) && 
+			fread(parsed_elf->file_header, sizeof(*parsed_elf->file_header), 1, file_ptr)
+		)
+		{
+			/* parse phnum entries of size ph_entsize from offset phoff */
+			size_t phnum = parsed_elf->file_header->e_phnum;
+			size_t phentsize = parsed_elf->file_header->e_phentsize;
+			size_t phoff = parsed_elf->file_header->e_phoff;
+			/* set stream pos indicator to offset=phoff from SEEK_SET */
+			fseek(file_ptr, phoff, SEEK_SET);
 
-	return buff;
+			/* allocate memory for program header */
+			if(
+				(parsed_elf->program_header = malloc(phentsize * phnum)) &&
+				fread(parsed_elf->program_header, phentsize, phnum, file_ptr)
+			)
+			{
+				fprintf(stdout, "successfully read from elf file\n");
+			}
+			else
+				fprintf(stderr, "parsing elf program_header failed...malloc error or fread error\n");
+		}
+		else
+			fprintf(stderr, "parsing elf file_header failed...malloc error or fread error\n");
+			
+	}
+
+	return parsed_elf;
 }
 
-void display_header_elf_32(struct elf_32 *buff)
+void display_file_header_elf_32(struct elf_32 *parsed_elf_32)
 {
+	struct elf_32_file_header *buff = parsed_elf_32->file_header;
 	fprintf(stdout,
-			"============[ HEADER ]============\n"
+			"============[ FILE HEADER ]============\n"
 			"e_ident[EI_MAG0-3]    : 0x%X %c%c%c\n"
 			"e_ident[EI_CLASS]     : 0x%X\n"
 			"e_ident[EI_DATA]      : 0x%X\n"
@@ -98,13 +149,48 @@ void display_header_elf_32(struct elf_32 *buff)
 
 }
 
+
+void display_program_header_elf_32(struct elf_32 *parsed_elf_32)
+{
+	size_t phnum = parsed_elf_32->file_header->e_phnum;
+	struct elf_32_program_header_entry *table = parsed_elf_32->program_header;
+	fprintf(stdout, "============[ PROGRAM HEADER ]============\n");
+	for(size_t i=0; i<phnum; i++)
+	{
+		fprintf(stdout,
+				"[%lu]\n"
+				"\tp_type  : 0x%X\n"
+				"\tp_offset: 0x%X\n"
+				"\tp_vaddr : 0x%X\n"
+				"\tp_paddr : 0x%X\n"
+				"\tp_filesz: 0x%X\n"
+				"\tp_memsz : 0x%X\n"
+				"\tp_flags : 0x%X\n"
+				"\tp_align : 0x%X\n\n",
+				i,
+				table[i].p_type,
+				table[i].p_offset,
+				table[i].p_vaddr,
+				table[i].p_paddr,
+				table[i].p_filesz,
+				table[i].p_memsz,
+				table[i].p_flags,
+				table[i].p_align
+				);
+	}
+}
+
+
 int main(int argc, char **argv)
 {
 	if(argc < 2) return 1;
 	
 	FILE *ptr = fopen( argv[1], "r");
-	struct elf_32 *buffer= parse_elf_32(ptr);
-	display_header_elf_32(buffer);
+	struct elf_32 *buffer = parse_elf_32(ptr);
+	display_file_header_elf_32(buffer);
+	display_program_header_elf_32(buffer);
+	free(buffer->file_header);
+	free(buffer->program_header);
 	free(buffer);
 	return 0;
 }
