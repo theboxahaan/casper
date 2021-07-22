@@ -67,6 +67,7 @@ struct elf_32
 {
 	struct elf_32_file_header *file_header;				// pointer to file_header struct
 	struct elf_32_program_header_entry *program_header;	// array of program_header_entry structs
+	struct elf_32_section_header_entry *section_header;	// array of section_header_entry structs
 };
 
 struct elf_32 *parse_elf_32(FILE *);
