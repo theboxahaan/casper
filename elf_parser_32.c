@@ -25,7 +25,19 @@ struct elf_32 *parse_elf_32(FILE *file_ptr)
 
 			/* allocate memory for program header */
 			if( (parsed_elf->program_header = malloc(phentsize * phnum)) &&
-				fread(parsed_elf->program_header, phentsize, phnum, file_ptr) );
+				fread(parsed_elf->program_header, phentsize, phnum, file_ptr) )
+			{
+				size_t shnum = parsed_elf->file_header->e_shnum;
+				size_t shentsize = parsed_elf->file_header->e_shentsize;
+				size_t shoff = parsed_elf->file_header->e_shoff;
+
+				fseek(file_ptr, shoff, SEEK_SET);
+				
+				if( (parsed_elf->section_header = malloc(shentsize * shnum)) &&
+					fread(parsed_elf->section_header, shentsize, shnum, file_ptr) );
+				else
+					fprintf(stderr, "parsing elf section_header failed...malloc error or fread error\n");
+			}	
 			else
 				fprintf(stderr, "parsing elf program_header failed...malloc error or fread error\n");
 		}
@@ -119,16 +131,60 @@ void display_program_header_elf_32(struct elf_32 *parsed_elf_32)
 }
 
 
+void display_section_header_elf_32(struct elf_32 *parsed_elf_32)
+{
+	size_t shnum = parsed_elf_32->file_header->e_shnum;
+	struct elf_32_section_header_entry *table = parsed_elf_32->section_header;
+	fprintf(stdout, "============[ SECTION HEADER ]============\n");
+	for(size_t i=0; i<shnum; i++)
+	{
+		fprintf(stdout,
+				"[%lu]\n"
+				"\tsh_name     : 0x%X\n"
+				"\tsh_type     : 0x%X\n"
+				"\tsh_flags    : 0x%X\n"
+				"\tsh_addr     : 0x%X\n"
+				"\tsh_offset   : 0x%X\n"
+				"\tsh_size     : 0x%X\n"
+				"\tsh_link     : 0x%X\n"
+				"\tsh_info     : 0x%X\n"
+				"\tsh_addralign: 0x%X\n"
+				"\tsh_entsize  : 0x%X\n\n",
+				i,
+				table[i].sh_name,
+				table[i].sh_type,
+				table[i].sh_flags,
+				table[i].sh_addr,
+				table[i].sh_offset,
+				table[i].sh_size,
+				table[i].sh_link,
+				table[i].sh_info,
+				table[i].sh_addralign,
+				table[i].sh_entsize
+				);
+	}
+}
+
 int main(int argc, char **argv)
 {
 	if(argc < 2) return 1;
 	
-	FILE *ptr = fopen( argv[1], "r");
-	struct elf_32 *buffer = parse_elf_32(ptr);
-	display_file_header_elf_32(buffer);
-	display_program_header_elf_32(buffer);
-	free(buffer->file_header);
-	free(buffer->program_header);
-	free(buffer);
-	return 0;
+	FILE *ptr = NULL;
+	if((ptr = fopen( argv[1], "r")))
+	{
+		struct elf_32 *buffer = parse_elf_32(ptr);
+		display_file_header_elf_32(buffer);
+		display_program_header_elf_32(buffer);
+		display_section_header_elf_32(buffer);
+		free(buffer->file_header);
+		free(buffer->program_header);
+		free(buffer->section_header);
+		free(buffer);
+		return 0;
+	}
+	else
+	{
+		fprintf(stderr, "error fopening file...\n");
+		return 1;
+	}
 }
