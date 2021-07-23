@@ -165,6 +165,17 @@ void display_section_header_elf_32(struct elf_32 *parsed_elf_32)
 	}
 }
 
+
+void elf_32_cleanup(struct elf_32 *elf)
+{
+	fprintf(stdout, "freeing memory for elf_32 struct at 0x%p\n", elf);
+	free(elf->file_header);
+	free(elf->program_header);
+	free(elf->section_header);
+	free(elf);
+	
+}
+
 int main(int argc, char **argv)
 {
 	if(argc < 2) return 1;
@@ -176,10 +187,8 @@ int main(int argc, char **argv)
 		display_file_header_elf_32(buffer);
 		display_program_header_elf_32(buffer);
 		display_section_header_elf_32(buffer);
-		free(buffer->file_header);
-		free(buffer->program_header);
-		free(buffer->section_header);
-		free(buffer);
+		elf_32_cleanup(buffer);
+
 		return 0;
 	}
 	else

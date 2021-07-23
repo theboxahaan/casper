@@ -74,5 +74,6 @@ struct elf_32 *parse_elf_32(FILE *);
 void display_file_header_elf_32(struct elf_32 *);
 void display_program_header_elf_32(struct elf_32 *);
 void display_section_header_elf_32(struct elf_32 *);
+void elf_32_cleanup(struct elf_32 *);
 
 #endif
