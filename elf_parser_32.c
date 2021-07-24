@@ -8,11 +8,11 @@ struct elf_32 *parse_elf_32(FILE *file_ptr)
 {
 	struct elf_32 *parsed_elf = NULL;
 	
-	if(!( parsed_elf = malloc(sizeof(*parsed_elf)) ))
+	if(!( parsed_elf = malloc(sizeof(*parsed_elf))))
 		fprintf(stderr, "could not allocate memory for parsed  struct...malloc failed\n");
-	else{
+	else {
 		/* allocate memory for file header */
-		if( (parsed_elf->file_header = malloc(sizeof(*parsed_elf->file_header))) && 
+		if((parsed_elf->file_header = malloc(sizeof(*parsed_elf->file_header))) && 
 			fread(parsed_elf->file_header, sizeof(*parsed_elf->file_header), 1, file_ptr)) {
 			
 			/* parse phnum entries of size ph_entsize from offset phoff */
@@ -23,9 +23,9 @@ struct elf_32 *parse_elf_32(FILE *file_ptr)
 			fseek(file_ptr, phoff, SEEK_SET);
 
 			/* allocate memory for program header */
-			if( (parsed_elf->program_header = malloc(phentsize * phnum)) &&
-				fread(parsed_elf->program_header, phentsize, phnum, file_ptr) );
-			else{
+			if((parsed_elf->program_header = malloc(phentsize * phnum)) &&
+				fread(parsed_elf->program_header, phentsize, phnum, file_ptr));
+			else {
 				elf_32_cleanup(parsed_elf);
 				fprintf(stderr, "parsing elf program_header failed...malloc error or fread error\n");
 				return NULL;
@@ -38,9 +38,9 @@ struct elf_32 *parse_elf_32(FILE *file_ptr)
 			fseek(file_ptr, shoff, SEEK_SET);
 			
 			/* allocate memory for section header */
-			if( (parsed_elf->section_header = malloc(shentsize * shnum)) &&
-				fread(parsed_elf->section_header, shentsize, shnum, file_ptr) );
-			else{
+			if((parsed_elf->section_header = malloc(shentsize * shnum)) &&
+				fread(parsed_elf->section_header, shentsize, shnum, file_ptr));
+			else {
 				elf_32_cleanup(parsed_elf);
 				fprintf(stderr, "parsing elf section_header failed...malloc error or fread error\n");
 				return NULL;
