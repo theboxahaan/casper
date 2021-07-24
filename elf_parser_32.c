@@ -10,12 +10,11 @@ struct elf_32 *parse_elf_32(FILE *file_ptr)
 	
 	if(!( parsed_elf = malloc(sizeof(*parsed_elf)) ))
 		fprintf(stderr, "could not allocate memory for parsed  struct...malloc failed\n");
-	else
-	{
+	else{
 		/* allocate memory for file header */
 		if( (parsed_elf->file_header = malloc(sizeof(*parsed_elf->file_header))) && 
-			fread(parsed_elf->file_header, sizeof(*parsed_elf->file_header), 1, file_ptr))
-		{
+			fread(parsed_elf->file_header, sizeof(*parsed_elf->file_header), 1, file_ptr)) {
+			
 			/* parse phnum entries of size ph_entsize from offset phoff */
 			size_t phnum = parsed_elf->file_header->e_phnum;
 			size_t phentsize = parsed_elf->file_header->e_phentsize;
@@ -25,24 +24,30 @@ struct elf_32 *parse_elf_32(FILE *file_ptr)
 
 			/* allocate memory for program header */
 			if( (parsed_elf->program_header = malloc(phentsize * phnum)) &&
-				fread(parsed_elf->program_header, phentsize, phnum, file_ptr) )
-			{
-				size_t shnum = parsed_elf->file_header->e_shnum;
-				size_t shentsize = parsed_elf->file_header->e_shentsize;
-				size_t shoff = parsed_elf->file_header->e_shoff;
-
-				fseek(file_ptr, shoff, SEEK_SET);
-				
-				if( (parsed_elf->section_header = malloc(shentsize * shnum)) &&
-					fread(parsed_elf->section_header, shentsize, shnum, file_ptr) );
-				else
-					fprintf(stderr, "parsing elf section_header failed...malloc error or fread error\n");
-			}	
-			else
+				fread(parsed_elf->program_header, phentsize, phnum, file_ptr) );
+			else{
+				elf_32_cleanup(parsed_elf);
 				fprintf(stderr, "parsing elf program_header failed...malloc error or fread error\n");
-		}
-		else
+				return NULL;
+			} 
+
+			size_t shnum = parsed_elf->file_header->e_shnum;
+			size_t shentsize = parsed_elf->file_header->e_shentsize;
+			size_t shoff = parsed_elf->file_header->e_shoff;
+
+			fseek(file_ptr, shoff, SEEK_SET);
+			
+			/* allocate memory for section header */
+			if( (parsed_elf->section_header = malloc(shentsize * shnum)) &&
+				fread(parsed_elf->section_header, shentsize, shnum, file_ptr) );
+			else{
+				elf_32_cleanup(parsed_elf);
+				fprintf(stderr, "parsing elf section_header failed...malloc error or fread error\n");
+				return NULL;
+			}
+		} else {
 			fprintf(stderr, "parsing elf file_header failed...malloc error or fread error\n");
+		}
 	}
 
 	return parsed_elf;
@@ -181,18 +186,20 @@ int main(int argc, char **argv)
 	if(argc < 2) return 1;
 	
 	FILE *ptr = NULL;
-	if((ptr = fopen( argv[1], "r")))
-	{
-		struct elf_32 *buffer = parse_elf_32(ptr);
-		display_file_header_elf_32(buffer);
-		display_program_header_elf_32(buffer);
-		display_section_header_elf_32(buffer);
-		elf_32_cleanup(buffer);
+	if((ptr = fopen( argv[1], "r"))){
+		struct elf_32 *buffer = NULL;
+		if( (buffer = parse_elf_32(ptr)) ){
+			display_file_header_elf_32(buffer);
+			display_program_header_elf_32(buffer);
+			display_section_header_elf_32(buffer);
+			elf_32_cleanup(buffer);
+			return 0;
+		} else {
+			fprintf(stderr, "parse_elf_32 failed\n");
+			return 0;
+		}
 
-		return 0;
-	}
-	else
-	{
+	} else{
 		fprintf(stderr, "error fopening file...\n");
 		return 1;
 	}
