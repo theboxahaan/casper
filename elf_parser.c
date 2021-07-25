@@ -230,19 +230,21 @@ void display_program_header_elf_32(struct elf_32 *parsed_elf_32)
 {
 	size_t phnum = parsed_elf_32->file_header->e_phnum;
 	struct elf_32_program_header_entry *table = parsed_elf_32->program_header;
-	fprintf(stdout, "============[ PROGRAM HEADER ]============\n");
+	fprintf(stdout, "\n============[ PROGRAM HEADER ]============\n");
+	fprintf(stdout, "\t%8s %8s %8s %8s %8s %8s %8s %8s\n", 
+	"TYPE", "FLAGS", "OFFSET", "VADDR", "PADDR", "FILESZ", "MEMSZ", "ALIGN");
 	for(size_t i=0; i<phnum; i++)
 	{
 		fprintf(stdout,
-				"[%lu]\n"
-				"\tp_type  : 0x%X\n"
-				"\tp_offset: 0x%X\n"
-				"\tp_vaddr : 0x%X\n"
-				"\tp_paddr : 0x%X\n"
-				"\tp_filesz: 0x%X\n"
-				"\tp_memsz : 0x%X\n"
-				"\tp_flags : 0x%X\n"
-				"\tp_align : 0x%X\n\n",
+				"[%lu]\t"
+				"%8X"
+				" %8X"
+				" %8X"
+				" %8X"
+				" %8X"
+				" %8X"
+				" %8X"
+				" %8X\n",
 				i,
 				table[i].p_type,
 				table[i].p_offset,
@@ -260,19 +262,21 @@ void display_program_header_elf_64(struct elf_64 *parsed_elf_64)
 {
 	size_t phnum = parsed_elf_64->file_header->e_phnum;
 	struct elf_64_program_header_entry *table = parsed_elf_64->program_header;
-	fprintf(stdout, "============[ PROGRAM HEADER ]============\n");
+	fprintf(stdout, "\n============[ PROGRAM HEADER ]============\n");
+	fprintf(stdout, "\t%8s %8s %16s %16s %16s %16s %16s %16s\n", 
+	"TYPE", "FLAGS", "OFFSET", "VADDR", "PADDR", "FILESZ", "MEMSZ", "ALIGN");
 	for(size_t i=0; i<phnum; i++)
 	{
 		fprintf(stdout,
-				"[%lu]\n"
-				"\tp_type  : 0x%X\n"
-				"\tp_flags : 0x%X\n"
-				"\tp_offset: 0x%llX\n"
-				"\tp_vaddr : 0x%llX\n"
-				"\tp_paddr : 0x%llX\n"
-				"\tp_filesz: 0x%llX\n"
-				"\tp_memsz : 0x%llX\n"
-				"\tp_align : 0x%llX\n\n",
+				"[%lu]\t"
+				"%8X"
+				" %8X"
+				" %16llX"
+				" %16llX"
+				" %16llX"
+				" %16llX"
+				" %16llX"
+				" %16llX\n",
 				i,
 				table[i].p_type,
 				table[i].p_flags,
@@ -291,22 +295,23 @@ void display_section_header_elf_32(struct elf_32 *parsed_elf_32)
 {
 	size_t shnum = parsed_elf_32->file_header->e_shnum;
 	struct elf_32_section_header_entry *table = parsed_elf_32->section_header;
-	fprintf(stdout, "============[ SECTION HEADER ]============\n");
-	fprintf(stdout, "\t%8s   %8s   %8s   %8s   %8s   %8s   %8s   %8s   %8s   %8s\n", "NAME", "TYPE", "FLAGS", "ADDR", "OFFSET", "SIZE", "LINK", "INFO", "ADDRALIGN", "ENTSIZE");
+	fprintf(stdout, "\n============[ SECTION HEADER ]============\n");
+	fprintf(stdout, "\t%8s %8s %8s %8s %8s %8s %8s %8s %8s %8s\n", 
+	"NAME", "TYPE", "FLAGS", "ADDR", "OFFSET", "SIZE", "LINK", "INFO", "ADDRALIGN", "ENTSIZE");
 	for(size_t i=0; i<shnum; i++)
 	{
 		fprintf(stdout,
 				"[%lu]\t"
 				"%8X"
-				"   %8X"
-				"   %8X"
-				"   %8X"
-				"   %8X"
-				"   %8X"
-				"   %8X"
-				"   %8X"
-				"   %8X"
-				"   %8X\n",
+				" %8X"
+				" %8X"
+				" %8X"
+				" %8X"
+				" %8X"
+				" %8X"
+				" %8X"
+				" %8X"
+				" %8X\n",
 				i,
 				table[i].sh_name,
 				table[i].sh_type,
@@ -327,22 +332,23 @@ void display_section_header_elf_64(struct elf_64 *parsed_elf_64)
 {
 	size_t shnum = parsed_elf_64->file_header->e_shnum;
 	struct elf_64_section_header_entry *table = parsed_elf_64->section_header;
-	fprintf(stdout, "============[ SECTION HEADER ]============\n");
-	fprintf(stdout, "\t%8s   %8s   %16s   %16s   %16s   %16s   %8s   %8s   %16s   %16s\n", "NAME", "TYPE", "FLAGS", "ADDR", "OFFSET", "SIZE", "LINK", "INFO", "ADDRALIGN", "ENTSIZE");
+	fprintf(stdout, "\n============[ SECTION HEADER ]============\n");
+	fprintf(stdout, "\t%8s %8s %16s %16s %16s %16s %8s %8s %16s %16s\n", 
+	"NAME", "TYPE", "FLAGS", "ADDR", "OFFSET", "SIZE", "LINK", "INFO", "ADDRALIGN", "ENTSIZE");
 	for(size_t i=0; i<shnum; i++)
 	{
 		fprintf(stdout,
 				"[%lu]\t"
 				"%8X"
-				"   %8X"
-				"   %16llX"
-				"   %16llX"
-				"   %16llX"
-				"   %16llX"
-				"   %8X"
-				"   %8X"
-				"   %16llX"
-				"   %16llX\n",
+				" %8X"
+				" %16llX"
+				" %16llX"
+				" %16llX"
+				" %16llX"
+				" %8X"
+				" %8X"
+				" %16llX"
+				" %16llX\n",
 				i,
 				table[i].sh_name,
 				table[i].sh_type,
