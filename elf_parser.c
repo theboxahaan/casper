@@ -236,15 +236,7 @@ void display_program_header_elf_32(struct elf_32 *parsed_elf_32)
 	for(size_t i=0; i<phnum; i++)
 	{
 		fprintf(stdout,
-				"[%lu]\t"
-				"%8X"
-				" %8X"
-				" %8X"
-				" %8X"
-				" %8X"
-				" %8X"
-				" %8X"
-				" %8X\n",
+				"[%lu]\t%8X %8X %8X %8X %8X %8X %8X %8X\n",
 				i,
 				table[i].p_type,
 				table[i].p_offset,
@@ -268,15 +260,7 @@ void display_program_header_elf_64(struct elf_64 *parsed_elf_64)
 	for(size_t i=0; i<phnum; i++)
 	{
 		fprintf(stdout,
-				"[%lu]\t"
-				"%8X"
-				" %8X"
-				" %16llX"
-				" %16llX"
-				" %16llX"
-				" %16llX"
-				" %16llX"
-				" %16llX\n",
+				"[%lu]\t%8X %8X %16llX %16llX %16llX %16llX %16llX %16llX\n",
 				i,
 				table[i].p_type,
 				table[i].p_flags,
@@ -301,17 +285,7 @@ void display_section_header_elf_32(struct elf_32 *parsed_elf_32)
 	for(size_t i=0; i<shnum; i++)
 	{
 		fprintf(stdout,
-				"[%lu]\t"
-				"%8X"
-				" %8X"
-				" %8X"
-				" %8X"
-				" %8X"
-				" %8X"
-				" %8X"
-				" %8X"
-				" %8X"
-				" %8X\n",
+				"[%lu]\t%8X %8X %8X %8X %8X %8X %8X %8X %8X %8X\n",
 				i,
 				table[i].sh_name,
 				table[i].sh_type,
@@ -338,17 +312,7 @@ void display_section_header_elf_64(struct elf_64 *parsed_elf_64)
 	for(size_t i=0; i<shnum; i++)
 	{
 		fprintf(stdout,
-				"[%lu]\t"
-				"%8X"
-				" %8X"
-				" %16llX"
-				" %16llX"
-				" %16llX"
-				" %16llX"
-				" %8X"
-				" %8X"
-				" %16llX"
-				" %16llX\n",
+				"[%lu]\t%8X %8X %16llX %16llX %16llX %16llX %8X %8X %16llX %16llX\n",
 				i,
 				table[i].sh_name,
 				table[i].sh_type,
