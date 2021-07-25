@@ -119,6 +119,9 @@ struct elf_64{
 	struct elf_64_section_header_entry *section_header;	// array of section_header_entry structs
 };
 
+uint8_t is_elf_64(FILE *);
+uint8_t is_little_endian(FILE *);
+
 struct elf_32 *parse_elf_32(FILE *);
 void display_file_header_elf_32(struct elf_32 *);
 void display_program_header_elf_32(struct elf_32 *);

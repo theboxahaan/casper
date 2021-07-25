@@ -4,6 +4,25 @@
 
 #include "elf.h"
 
+uint8_t is_elf_64(FILE *file_ptr)
+{
+	uint8_t eiclass;
+	fseek(file_ptr, 0x04, SEEK_SET); // 0x05 contains the byte e_ident[EI_CLASS]
+	fread(&eiclass, sizeof(eiclass), 1, file_ptr);
+	rewind(file_ptr);
+	return eiclass;
+}
+
+uint8_t is_little_endian(FILE *file_ptr)
+{
+	uint8_t eidata;
+	fseek(file_ptr, 0x05, SEEK_SET); // 0x05 contains the byte e_ident[EI_DATA]
+	fread(&eidata, sizeof(eidata), 1, file_ptr);
+	rewind(file_ptr);
+	return eidata;
+}
+
+
 struct elf_32 *parse_elf_32(FILE *file_ptr)
 {
 	struct elf_32 *parsed_elf = NULL;
