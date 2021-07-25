@@ -292,20 +292,21 @@ void display_section_header_elf_32(struct elf_32 *parsed_elf_32)
 	size_t shnum = parsed_elf_32->file_header->e_shnum;
 	struct elf_32_section_header_entry *table = parsed_elf_32->section_header;
 	fprintf(stdout, "============[ SECTION HEADER ]============\n");
+	fprintf(stdout, "\t%8s   %8s   %8s   %8s   %8s   %8s   %8s   %8s   %8s   %8s\n", "NAME", "TYPE", "FLAGS", "ADDR", "OFFSET", "SIZE", "LINK", "INFO", "ADDRALIGN", "ENTSIZE");
 	for(size_t i=0; i<shnum; i++)
 	{
 		fprintf(stdout,
-				"[%lu]\n"
-				"\tsh_name     : 0x%X\n"
-				"\tsh_type     : 0x%X\n"
-				"\tsh_flags    : 0x%X\n"
-				"\tsh_addr     : 0x%X\n"
-				"\tsh_offset   : 0x%X\n"
-				"\tsh_size     : 0x%X\n"
-				"\tsh_link     : 0x%X\n"
-				"\tsh_info     : 0x%X\n"
-				"\tsh_addralign: 0x%X\n"
-				"\tsh_entsize  : 0x%X\n\n",
+				"[%lu]\t"
+				"%8X"
+				"   %8X"
+				"   %8X"
+				"   %8X"
+				"   %8X"
+				"   %8X"
+				"   %8X"
+				"   %8X"
+				"   %8X"
+				"   %8X\n",
 				i,
 				table[i].sh_name,
 				table[i].sh_type,
@@ -327,20 +328,21 @@ void display_section_header_elf_64(struct elf_64 *parsed_elf_64)
 	size_t shnum = parsed_elf_64->file_header->e_shnum;
 	struct elf_64_section_header_entry *table = parsed_elf_64->section_header;
 	fprintf(stdout, "============[ SECTION HEADER ]============\n");
+	fprintf(stdout, "\t%8s   %8s   %16s   %16s   %16s   %16s   %8s   %8s   %16s   %16s\n", "NAME", "TYPE", "FLAGS", "ADDR", "OFFSET", "SIZE", "LINK", "INFO", "ADDRALIGN", "ENTSIZE");
 	for(size_t i=0; i<shnum; i++)
 	{
 		fprintf(stdout,
-				"[%lu]\n"
-				"\tsh_name     : 0x%X\n"
-				"\tsh_type     : 0x%X\n"
-				"\tsh_flags    : 0x%llX\n"
-				"\tsh_addr     : 0x%llX\n"
-				"\tsh_offset   : 0x%llX\n"
-				"\tsh_size     : 0x%llX\n"
-				"\tsh_link     : 0x%X\n"
-				"\tsh_info     : 0x%X\n"
-				"\tsh_addralign: 0x%llX\n"
-				"\tsh_entsize  : 0x%llX\n\n",
+				"[%lu]\t"
+				"%8X"
+				"   %8X"
+				"   %16llX"
+				"   %16llX"
+				"   %16llX"
+				"   %16llX"
+				"   %8X"
+				"   %8X"
+				"   %16llX"
+				"   %16llX\n",
 				i,
 				table[i].sh_name,
 				table[i].sh_type,
@@ -369,7 +371,7 @@ void elf_32_cleanup(struct elf_32 *elf)
 
 void elf_64_cleanup(struct elf_64 *elf)
 {
-	fprintf(stdout, "freeing memory for elf_32 struct at 0x%p\n", elf);
+	fprintf(stdout, "freeing memory for elf_64 struct at 0x%p\n", elf);
 	free(elf->file_header);
 	free(elf->program_header);
 	free(elf->section_header);
