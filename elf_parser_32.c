@@ -19,7 +19,7 @@ struct elf_32 *parse_elf_32(FILE *file_ptr)
 			size_t phnum = parsed_elf->file_header->e_phnum;
 			size_t phentsize = parsed_elf->file_header->e_phentsize;
 			size_t phoff = parsed_elf->file_header->e_phoff;
-			/* set stream pos indicator to offset=phoff from SEEK_SET */
+
 			fseek(file_ptr, phoff, SEEK_SET);
 
 			/* allocate memory for program header */
