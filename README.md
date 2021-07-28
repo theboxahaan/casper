@@ -2,11 +2,11 @@
 
 > Let's Get Started ! 😁
 
-### To build and run `elf_parser_32`
+### To build and run `elf_parser`
 Navigate to repo root`
 ```bash
 $ make
-$ cd build/ && ./elf_parser_32 <32 bit ELF file>
+$ cd build/ && ./elf_parser <32 bit ELF file>
 ```
 
 ### Test Binary Samples 
