@@ -27,46 +27,48 @@ struct elf_32 *parse_elf_32(FILE *file_ptr)
 {
 	struct elf_32 *parsed_elf = NULL;
 	
-	if(!( parsed_elf = malloc(sizeof(*parsed_elf))))
+	if(!( parsed_elf = malloc(sizeof(*parsed_elf)))) {
 		fprintf(stderr, "could not allocate memory for parsed  struct...malloc failed\n");
-	else {
+		return NULL;
+	}
 		/* allocate memory for file header */
-		if((parsed_elf->file_header = malloc(sizeof(*parsed_elf->file_header))) && 
-			fread(parsed_elf->file_header, sizeof(*parsed_elf->file_header), 1, file_ptr)) {
-			
-			/* parse phnum entries of size ph_entsize from offset phoff */
-			size_t phnum = parsed_elf->file_header->e_phnum;
-			size_t phentsize = parsed_elf->file_header->e_phentsize;
-			size_t phoff = parsed_elf->file_header->e_phoff;
+	if((parsed_elf->file_header = malloc(sizeof(*parsed_elf->file_header))) && 
+		fread(parsed_elf->file_header, sizeof(*parsed_elf->file_header), 1, file_ptr)) {
+		
+		/* parse phnum entries of size ph_entsize from offset phoff */
+		size_t phnum = parsed_elf->file_header->e_phnum;
+		size_t phentsize = parsed_elf->file_header->e_phentsize;
+		size_t phoff = parsed_elf->file_header->e_phoff;
 
-			fseek(file_ptr, phoff, SEEK_SET);
+		fseek(file_ptr, phoff, SEEK_SET);
 
-			/* allocate memory for program header */
-			if((parsed_elf->program_header = malloc(phentsize * phnum)) &&
-				fread(parsed_elf->program_header, phentsize, phnum, file_ptr));
-			else {
-				elf_32_cleanup(parsed_elf);
-				fprintf(stderr, "parsing elf program_header failed...malloc error or fread error\n");
-				return NULL;
-			} 
+		/* allocate memory for program header */
+		if((parsed_elf->program_header = malloc(phentsize * phnum)) &&
+			fread(parsed_elf->program_header, phentsize, phnum, file_ptr));
+		else {
+			elf_32_cleanup(parsed_elf);
+			fprintf(stderr, "parsing elf program_header failed...malloc error or fread error\n");
+			return NULL;
+		} 
 
-			size_t shnum = parsed_elf->file_header->e_shnum;
-			size_t shentsize = parsed_elf->file_header->e_shentsize;
-			size_t shoff = parsed_elf->file_header->e_shoff;
+		size_t shnum = parsed_elf->file_header->e_shnum;
+		size_t shentsize = parsed_elf->file_header->e_shentsize;
+		size_t shoff = parsed_elf->file_header->e_shoff;
 
-			fseek(file_ptr, shoff, SEEK_SET);
-			
-			/* allocate memory for section header */
-			if((parsed_elf->section_header = malloc(shentsize * shnum)) &&
-				fread(parsed_elf->section_header, shentsize, shnum, file_ptr));
-			else {
-				elf_32_cleanup(parsed_elf);
-				fprintf(stderr, "parsing elf section_header failed...malloc error or fread error\n");
-				return NULL;
-			}
-		} else {
-			fprintf(stderr, "parsing elf file_header failed...malloc error or fread error\n");
+		fseek(file_ptr, shoff, SEEK_SET);
+		
+		/* allocate memory for section header */
+		if((parsed_elf->section_header = malloc(shentsize * shnum)) &&
+			fread(parsed_elf->section_header, shentsize, shnum, file_ptr));
+		else {
+			elf_32_cleanup(parsed_elf);
+			fprintf(stderr, "parsing elf section_header failed...malloc error or fread error\n");
+			return NULL;
 		}
+	} else {
+		fprintf(stderr, "parsing elf file_header failed...malloc error or fread error\n");
+		elf_32_cleanup(parsed_elf);
+		return NULL;
 	}
 
 	return parsed_elf;
@@ -76,46 +78,48 @@ struct elf_64 *parse_elf_64(FILE *file_ptr)
 {
 	struct elf_64 *parsed_elf = NULL;
 	
-	if(!( parsed_elf = malloc(sizeof(*parsed_elf))))
+	if(!( parsed_elf = malloc(sizeof(*parsed_elf)))) {
 		fprintf(stderr, "could not allocate memory for parsed  struct...malloc failed\n");
-	else {
+		return NULL;
+	}
 		/* allocate memory for file header */
-		if((parsed_elf->file_header = malloc(sizeof(*parsed_elf->file_header))) && 
-			fread(parsed_elf->file_header, sizeof(*parsed_elf->file_header), 1, file_ptr)) {
-			
-			/* parse phnum entries of size ph_entsize from offset phoff */
-			size_t phnum = parsed_elf->file_header->e_phnum;
-			size_t phentsize = parsed_elf->file_header->e_phentsize;
-			size_t phoff = parsed_elf->file_header->e_phoff;
+	if((parsed_elf->file_header = malloc(sizeof(*parsed_elf->file_header))) && 
+		fread(parsed_elf->file_header, sizeof(*parsed_elf->file_header), 1, file_ptr)) {
+		
+		/* parse phnum entries of size ph_entsize from offset phoff */
+		size_t phnum = parsed_elf->file_header->e_phnum;
+		size_t phentsize = parsed_elf->file_header->e_phentsize;
+		size_t phoff = parsed_elf->file_header->e_phoff;
 
-			fseek(file_ptr, phoff, SEEK_SET);
+		fseek(file_ptr, phoff, SEEK_SET);
 
-			/* allocate memory for program header */
-			if((parsed_elf->program_header = malloc(phentsize * phnum)) &&
-				fread(parsed_elf->program_header, phentsize, phnum, file_ptr));
-			else {
-				elf_64_cleanup(parsed_elf);
-				fprintf(stderr, "parsing elf program_header failed...malloc error or fread error\n");
-				return NULL;
-			} 
+		/* allocate memory for program header */
+		if((parsed_elf->program_header = malloc(phentsize * phnum)) &&
+			fread(parsed_elf->program_header, phentsize, phnum, file_ptr));
+		else {
+			elf_64_cleanup(parsed_elf);
+			fprintf(stderr, "parsing elf program_header failed...malloc error or fread error\n");
+			return NULL;
+		} 
 
-			size_t shnum = parsed_elf->file_header->e_shnum;
-			size_t shentsize = parsed_elf->file_header->e_shentsize;
-			size_t shoff = parsed_elf->file_header->e_shoff;
+		size_t shnum = parsed_elf->file_header->e_shnum;
+		size_t shentsize = parsed_elf->file_header->e_shentsize;
+		size_t shoff = parsed_elf->file_header->e_shoff;
 
-			fseek(file_ptr, shoff, SEEK_SET);
-			
-			/* allocate memory for section header */
-			if((parsed_elf->section_header = malloc(shentsize * shnum)) &&
-				fread(parsed_elf->section_header, shentsize, shnum, file_ptr));
-			else {
-				elf_64_cleanup(parsed_elf);
-				fprintf(stderr, "parsing elf section_header failed...malloc error or fread error\n");
-				return NULL;
-			}
-		} else {
-			fprintf(stderr, "parsing elf file_header failed...malloc error or fread error\n");
+		fseek(file_ptr, shoff, SEEK_SET);
+		
+		/* allocate memory for section header */
+		if((parsed_elf->section_header = malloc(shentsize * shnum)) &&
+			fread(parsed_elf->section_header, shentsize, shnum, file_ptr));
+		else {
+			elf_64_cleanup(parsed_elf);
+			fprintf(stderr, "parsing elf section_header failed...malloc error or fread error\n");
+			return NULL;
 		}
+	} else {
+		fprintf(stderr, "parsing elf file_header failed...malloc error or fread error\n");
+		elf_64_cleanup(parsed_elf);
+		return NULL;
 	}
 
 	return parsed_elf;
