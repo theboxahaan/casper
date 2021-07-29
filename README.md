@@ -20,4 +20,5 @@ Test Binary Samples taken from [https://github.com/JonathanSalwan/binary-samples
 4. Look at the fuscia OS for design - maybe microkernel ?
 5. Add a fuzzy search bar like spotlight 
 6. Start writing a shell ?
-7. Follow build with a series of blogs 
+7. Follow build with a series of blogs
+8. Switch to C++ ? Will make for smaller code I guess 🤷‍♂️
