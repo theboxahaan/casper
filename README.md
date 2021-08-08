@@ -6,7 +6,7 @@
 Navigate to repo root`
 ```bash
 $ make
-$ cd build/ && ./elf_parser <32 bit ELF file>
+$ cd build/ && ./elf_parser <32/64 bit ELF file>
 ```
 
 ### Test Binary Samples 
