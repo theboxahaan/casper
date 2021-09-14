@@ -3,7 +3,7 @@
 > Let's Get Started ! 😁
 
 ### To build and run `elf_parser`
-Navigate to repo root`
+Navigate to repo root
 ```bash
 $ make
 $ cd build/ && ./elf_parser <32/64 bit ELF file>
