@@ -22,3 +22,4 @@ Test Binary Samples taken from [https://github.com/JonathanSalwan/binary-samples
 6. Start writing a shell ?
 7. Follow build with a series of blogs
 8. Switch to C++ ? Will make for smaller code I guess 🤷‍♂️
+9. maybe rust? Good to learn something new
